@@ -1,2 +1,4 @@
 django-env/
 .idea/
+*.sqlite3
+*/migrations/*.py

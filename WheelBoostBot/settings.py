@@ -122,5 +122,6 @@ STATIC_URL = '/static/'
 # Constance
 CONSTANCE_CONFIG = {
     'BOT_URL': os.environ['BOT_URL'],
-    'TOKEN': os.environ['TOKEN']
+    'TOKEN': os.environ['TOKEN'],
+    'EVENTS_URL': os.environ['EVENTS_URL']
 }
