@@ -5,6 +5,7 @@ from WheelBoostBot.settings import CONSTANCE_CONFIG
 import requests
 import telebot
 
+
 TOKEN = CONSTANCE_CONFIG['TOKEN']
 tbot = telebot.TeleBot(TOKEN)
 
@@ -38,4 +39,3 @@ def location(message):
     # TODO: Think about the format for the response
     keyboard = create_keyboard()
     tbot.send_message(message.chat.id, response.text, reply_markup=keyboard)
-
