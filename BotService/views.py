@@ -15,6 +15,9 @@ def create_keyboard():
     keyboard.add(button)
     return keyboard
 
+def create_maps_link(lat, lon):
+    return '{}pt={},{}'.format(CONSTANCE_CONFIG['MAP_URL'], lat, lon)
+
 @csrf_exempt
 def bot(request):
     if request.META['CONTENT_TYPE'] == 'application/json':
@@ -36,6 +39,24 @@ def location(message):
     response = requests.post(CONSTANCE_CONFIG['EVENTS_URL'] + 'get_events_service',
                              json={'coordinates': '{}, {}'.format(message.location.latitude,
                                                                   message.location.longitude)})
-    # TODO: Think about the format for the response
     keyboard = create_keyboard()
-    tbot.send_message(message.chat.id, response.text, reply_markup=keyboard)
+    for event in response.json():
+        # TODO: validation
+        title = event.title
+        description = event.description
+        price = event.price
+        peopleCount = event.peopleCount
+        startTime = event.sttartTime
+        endTime = event.endTime
+        lat, lon = event.coordinates.split(', ')
+        link = create_maps_link(lat, lon)
+        response_text = 'Название: {}\n' \
+                        'Описание: {}\n' \
+                        'Цена билета: {}\n' \
+                        'Время начала: {}\n' \
+                        'Время конца: {}\n' \
+                        'Число посетителей: {}\n' \
+                        'Карта: {}'.format(
+            title, description, price, startTime, endTime, peopleCount, link
+        )
+        tbot.send_message(message.chat.id, response_text, reply_markup=keyboard)
