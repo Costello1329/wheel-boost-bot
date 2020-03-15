@@ -43,13 +43,13 @@ def location(message):
     keyboard = create_keyboard()
     for event in response.json():
         # TODO: validation
-        title = event.title
-        description = event.description
-        price = event.price
-        peopleCount = event.peopleCount
-        startTime = event.sttartTime
-        endTime = event.endTime
-        lat, lon = event.coordinates.split(', ')
+        title = event['title']
+        description = event['description']
+        price = event['price']
+        peopleCount = event['peopleCount']
+        startTime = event['startTime']
+        endTime = event['endTime']
+        lat, lon = event['coordinates'].split(', ')
         link = create_maps_link(lat, lon)
         response_text = 'Название: {}\n' \
                         'Описание: {}\n' \
