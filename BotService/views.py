@@ -36,6 +36,7 @@ def start(message):
 
 @tbot.message_handler(content_types=['location'])
 def location(message):
+    # TODO: add empty response handler
     response = requests.post(CONSTANCE_CONFIG['EVENTS_URL'] + 'get_events_service',
                              json={'coordinates': '{}, {}'.format(message.location.latitude,
                                                                   message.location.longitude)})
