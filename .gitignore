@@ -3,3 +3,5 @@ django-env/
 *.sqlite3
 */migrations/*.py
 venv/
+*__py
+*__pycache__/
