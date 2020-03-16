@@ -124,5 +124,6 @@ STATIC_URL = '/static/'
 CONSTANCE_CONFIG = {
     'BOT_URL': os.environ['BOT_URL'],
     'TOKEN': os.environ['TOKEN'],
-    'EVENTS_URL': os.environ['EVENTS_URL']
+    'EVENTS_URL': os.environ['EVENTS_URL'],
+    'MAP_URL': os.environ['MAP_URL']
 }
