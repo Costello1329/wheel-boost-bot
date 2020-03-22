@@ -1,5 +1,5 @@
 from django.urls import path
-from bot.views import bot
+from BotService.views import bot
 from WheelBoostBot.settings import CONSTANCE_CONFIG
 
 
