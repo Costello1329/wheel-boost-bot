@@ -7,6 +7,7 @@ bot = telebot.TeleBot('838303904:AAFx5DBw_Wwm-HREaqUHJdNaXkJrMDQXqsE')
 events_url = 'http://178.128.155.88:8000/get_events'
 
 log_file = open('log.txt', 'a')
+photo_file = open('photo.txt', 'a')
 
 def log(username, date, loc):
     log_file.write('{} {} {} {}\n'.format(date, username, loc.latitude, loc.longitude))
@@ -21,8 +22,10 @@ def check_whitelist(uid):
 
 def create_keyboard():
     keyboard = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-    button = telebot.types.KeyboardButton(text='Отправить местоположение', request_location=True)
-    keyboard.add(button)
+    button_loc = telebot.types.KeyboardButton(text='Отправить местоположение', request_location=True)
+    button_thanks = telebot.types.KeyboardButton(text='Спасибо! Я получил заказ.')
+    keyboard.add(button_loc)
+    keyboard.add(button_thanks)
     return keyboard
 
 def pretty_date(ugly_date):
@@ -73,5 +76,19 @@ def location(message):
             break
     if notfing:
         bot.send_message(message.chat.id, 'К сожалению, по близости ничего нет', reply_markup=keyboard)
+
+@bot.message_handler(content_types=['text'])
+def text_handler(message):
+    if message.text == 'Спасибо! Я получил заказ.':
+        bot.send_message(message.chat.id, 'Помогите нам сделать сервис лучше. Пришлите скриншот, подтверждающий получение заказа',
+                         reply_markup=create_keyboard())
+
+@bot.message_handler(content_types=['photo'])
+def photo_handler(message):
+    file_id = message.photo[-1].file_id
+    photo_file.write(file_id + '\n')
+    photo_file.flush()
+
+    bot.send_message(message.chat.id, 'Спасибо!', reply_markup=create_keyboard())
 
 bot.polling()
