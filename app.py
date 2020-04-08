@@ -39,7 +39,7 @@ def start_message(message):
 def get_logs(message):
     if check_whitelist(message.from_user.id):
         with open('log.txt') as logs:
-            res = ''
+            res = 'Отчет:\n'
             for line in logs:
                 line_array = line.split()
                 res += '@' + line_array[1] + ' ' + line_array[0] + ' ' + line_array[2] + '\n'
