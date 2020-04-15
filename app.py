@@ -26,7 +26,7 @@ def log(message, type_of_message):
         loc = message.location
         latitude = loc.latitude
         longitude = loc.longitude
-    log_file.write('{} {} {} {} {}\n'.format(date, uid, username, type, latitude, longitude))
+    log_file.write('{} {} {} {} {}\n'.format(date, uid, username, type_of_message, latitude, longitude))
     log_file.flush()
 
 def check_whitelist(uid):
