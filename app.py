@@ -16,13 +16,13 @@ events_url = 'http://178.128.155.88:8000/get_events'
 log_file = open('log.txt', 'a')
 photo_file = open('photo.txt', 'a')
 
-def log(message, type):
+def log(message, type_of_message):
     date = message.date
     uid = message.from_user.id
     username = message.from_user.username
     latitude = 0
     longitude = 0
-    if type == MessageType.LOCATION:
+    if type_of_message == MessageType.LOCATION:
         loc = message.location
         latitude = loc.latitude
         longitude = loc.longitude
