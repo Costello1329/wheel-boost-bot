@@ -60,14 +60,13 @@ def location(message):
         count += 1
         IsInfinite = event['isInfinite']
         title = 'Название: {}\n'.format(event['title'])
-        description = 'Описание: {}\n'.format(event['description'])
         price = 'Цена билета: {}\n'.format(event['price']) if float(event['price']) > 0 else ""
         peopleCount = 'Число посетителей: {}\n'.format(event['peopleCount']) if float(event['peopleCount']) > 0 else ""
         startTime = 'Время начала: {}\n'.format(pretty_date(event['startTime'])) if not IsInfinite else ""
         endTime = 'Время конца: {}\n'.format(pretty_date(event['endTime'])) if not IsInfinite else ""
         lat, lon = event['coordinates'].split(';')
         link = 'Карта: {}pt={},{}'.format('https://yandex.ru/maps?', lon, lat)
-        response_text = title + description + price + startTime + endTime + peopleCount + link
+        response_text = title + price + startTime + endTime + peopleCount + link
 
         bot.send_message(message.chat.id, response_text, reply_markup=keyboard)
         notfing = False
