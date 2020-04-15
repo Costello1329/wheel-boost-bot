@@ -1,6 +1,13 @@
 import telebot
 import requests
 import time
+from enum import Enum
+from datetime import datetime
+
+class MessageType(Enum):
+    LOCATION = 1
+    THANK = 2
+    PHOTO = 3
 
 bot = telebot.TeleBot('838303904:AAFx5DBw_Wwm-HREaqUHJdNaXkJrMDQXqsE')
 
@@ -9,8 +16,17 @@ events_url = 'http://178.128.155.88:8000/get_events'
 log_file = open('log.txt', 'a')
 photo_file = open('photo.txt', 'a')
 
-def log(username, date, loc):
-    log_file.write('{} {} {} {}\n'.format(date, username, loc.latitude, loc.longitude))
+def log(message, type):
+    date = message.date
+    uid = message.from_user.id
+    username = message.from_user.username
+    loc = {
+        "latitude": 0,
+        "longitude": 0
+    }
+    if type == MessageType.LOCATION:
+        loc = message.location
+    log_file.write('{} {} {} {} {}\n'.format(date, uid, username, type, loc.latitude, loc.longitude))
     log_file.flush()
 
 def check_whitelist(uid):
@@ -45,7 +61,9 @@ def get_logs(message):
             res = 'Отчет:\n'
             for line in logs:
                 line_array = line.split()
-                res += '@' + line_array[1] + ' ' + line_array[0] + ' ' + line_array[2] + '\n'
+                format_date = datetime.utcfromtimestamp(int(line_array[0])).strftime('%Y-%m-%d %H:%M:%S')
+
+                res += '@' + line_array[2] + ' ' + line_array[1] + ' ' + format_date + ' ' + line_array[3] + '\n'
             bot.send_message(message.chat.id, res, reply_markup=create_keyboard())
 
 @bot.message_handler(content_types=['location'])
@@ -55,7 +73,7 @@ def location(message):
     keyboard = create_keyboard()
     notfing = True
     count = 0
-    log(message.from_user.username, message.date, message.location)
+    log(message, MessageType.LOCATION)
     for event in response.json()['events']:
         count += 1
         IsInfinite = event['isInfinite']
@@ -79,11 +97,13 @@ def location(message):
 @bot.message_handler(content_types=['text'])
 def text_handler(message):
     if message.text == 'Спасибо! Я получил заказ.':
+        log(message, MessageType.THANK)
         bot.send_message(message.chat.id, 'Помогите нам сделать сервис лучше. Пришлите скриншот, подтверждающий получение заказа',
                          reply_markup=create_keyboard())
 
 @bot.message_handler(content_types=['photo'])
 def photo_handler(message):
+    log(message, MessageType.PHOTO)
     file_id = message.photo[-1].file_id
     photo_file.write(file_id + '\n')
     photo_file.flush()
