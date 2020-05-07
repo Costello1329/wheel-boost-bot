@@ -64,13 +64,13 @@ def pretty_date(ugly_date):
     date = time.strptime(ugly_date, '%Y-%m-%dT%H:%M:%SZ')
     return '{}:{}'.format(date.tm_hour, date.tm_min)
 
-@bot.message_handler(commands=['start'])
+@tbot.message_handler(commands=['start'])
 def start_message(message):
     keyboard = create_keyboard()
-    bot.send_message(message.chat.id, 'Привет! Отправляй своё местоположение, и я поищу для тебя ближайшие места, где может быть спрос на такси бизнес-класса',
-            reply_markup=keyboard)
+    tbot.send_message(message.chat.id, 'Привет! Отправляй своё местоположение, и я поищу для тебя ближайшие места, где может быть спрос на такси бизнес-класса',
+                      reply_markup=keyboard)
 
-@bot.message_handler(commands=['logs'])
+@tbot.message_handler(commands=['logs'])
 def get_logs(message):
     if check_whitelist(message.from_user.id):
         with open('log.txt') as logs:
@@ -80,9 +80,9 @@ def get_logs(message):
                 format_date = datetime.utcfromtimestamp(int(line_array[0])).strftime('%Y-%m-%d %H:%M:%S')
 
                 res += '@' + line_array[2] + ' ' + line_array[1] + ' ' + format_date + ' ' + line_array[3] + '\n'
-            bot.send_message(message.chat.id, res, reply_markup=create_keyboard())
+            tbot.send_message(message.chat.id, res, reply_markup=create_keyboard())
 
-@bot.message_handler(content_types=['location'])
+@tbot.message_handler(content_types=['location'])
 def location(message):
     print(message.location)
     response = requests.post(events_url, json={'coordinates': '{};{}'.format(message.location.latitude, message.location.longitude)})
@@ -102,26 +102,26 @@ def location(message):
         link = 'Карта: {}pt={},{}'.format('https://yandex.ru/maps?', lon, lat)
         response_text = title + price + startTime + endTime + peopleCount + link
 
-        bot.send_message(message.chat.id, response_text, reply_markup=keyboard)
+        tbot.send_message(message.chat.id, response_text, reply_markup=keyboard)
         notfing = False
 
         if count > 3:
             break
     if notfing:
-        bot.send_message(message.chat.id, 'К сожалению, по близости ничего нет', reply_markup=keyboard)
+        tbot.send_message(message.chat.id, 'К сожалению, по близости ничего нет', reply_markup=keyboard)
 
-@bot.message_handler(content_types=['text'])
+@tbot.message_handler(content_types=['text'])
 def text_handler(message):
     if message.text == 'Спасибо! Я получил заказ.':
         log(message, MessageType.THANK)
-        bot.send_message(message.chat.id, 'Помогите нам сделать сервис лучше. Пришлите скриншот, подтверждающий получение заказа',
-                         reply_markup=create_keyboard())
+        tbot.send_message(message.chat.id, 'Помогите нам сделать сервис лучше. Пришлите скриншот, подтверждающий получение заказа',
+                          reply_markup=create_keyboard())
 
-@bot.message_handler(content_types=['photo'])
+@tbot.message_handler(content_types=['photo'])
 def photo_handler(message):
     log(message, MessageType.PHOTO)
     file_id = message.photo[-1].file_id
     photo_file.write(file_id + '\n')
     photo_file.flush()
 
-    bot.send_message(message.chat.id, 'Спасибо!', reply_markup=create_keyboard())
+    tbot.send_message(message.chat.id, 'Спасибо!', reply_markup=create_keyboard())
